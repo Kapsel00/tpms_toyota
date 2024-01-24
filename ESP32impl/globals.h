@@ -1,5 +1,5 @@
+// Kod, który podałeś
 #define USE_HW_CD 1
-
 #define USE_PROGMEMCRC 1
 #define USE_BAR
 #define SHOWVALIDTPMS 1
@@ -9,44 +9,34 @@
 #define CDWIDTH_MIN 7600
 #define CDWIDTH_MAX 9500
 #define EXPECTEDBITCOUNT 72
+// ... (reszta kodu)
 
-#define I2C_ADDRESS 0x3D
+enum RXStates
+{
+  Waiting_Byte33 = 0,
+  Got_Byte33,
+  Got_Byte55,
+  Got_Byte53,
+  Manch1,
+  Manch2
+};
 
-#define CC1101_MISO (19) //blau
-#define CC1101_MOSI (23) //pink
-#define CC1101_SCKL (18) //rot
+// Połączenie z dostosowanym kodem
+// Dostosowane piny dla modułu CC1101
+#define CC1101_MISO 19
+#define CC1101_MOSI 21
+#define CC1101_SCKL 20
+#define CC1101_CS 5
 
-// Define the Chip Select pin
-#define CC1101_CS (16) //weiß
-
-// GDO2 Output Pin Configuration - Serial out
-#define RXPin (17) //weiß
-// GDO0 Output Pin Configuration - Carrier Sense output
-#define CDPin (4) //gelb
-
-#define OLED_RESET (-1)
-#define OLED_SDA (21)
-#define OLED_SCL (22)
-
+// Pozostałe piny
+#define RXPin 17
+#define CDPin 4
+#define OLED_RESET -1
+#define OLED_SDA 21
+#define OLED_SCL 22
 #define LED_RX 25
-#define LED_OFF HIGH
-#define LED_ON LOW
+#define DEBUGPIN 0;
 
-#define TPMS_TIMEOUT 900000 //(15 * 60 * 1000)  15 minutes
-
-#define FONTBAR_7 123
-#define FONTBAR_5 124
-#define FONTBAR_3 125
-#define FONTBAR_2 126
-#define FONTBAR_1 127
-#define FONTBAR_0 32
-
-#define TYRECOUNT_ON_DISPLAY 4
-#define TYRECOUNT_IN_DBASE 8
-
-#define PSI2BAR 14.504
-
-const int DEBUGPIN = 0;
 
 const int MAXBITS = 100;
 
@@ -84,13 +74,9 @@ unsigned long IncomingAddress;
 
 
 //this table (and its order define known TPMS IDs so that they their values are always displayed in the same order
-const unsigned long PROGMEM IDLookup[][2]
-{
-  {0xf15f04d4,'W'}, {0xf15f04d0,'W'}, {0xf14cba59,'W'}, {0xf14f1551,'W'},  //Winter
-  {0xf0ccb686,'S'}, {0xf0ccb782,'S'}, {0xf0ccb69d,'S'}, {0xf0ccb63f,'S'},  //Summer
+const unsigned long PROGMEM IDLookup[][2] = {
+  {0x1760232, 'W'}, {0x176024A, 'W'}, {0x17602F6, 'W'}, {0x176024E, 'W'},
 };
-
-
 
 #ifdef USE_PROGMEMCRC
   ////CRCTable
